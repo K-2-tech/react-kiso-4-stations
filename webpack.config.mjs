@@ -49,6 +49,7 @@ export default {
 };
 */
 // webpack.config.mjs
+// webpack.config.mjs
 import path from "path";
 import { fileURLToPath } from "url";
 import nodeExternals from "webpack-node-externals";
@@ -123,7 +124,7 @@ const serverConfig = {
 const clientConfig = {
   target: "web",
   mode: "production",
-  entry: "./client/index.js", // client/index.jsを使用するように修正
+  entry: "./client/index.js", // クライアントエントリーポイントを変更
   output: {
     path: path.resolve(__dirname, "dist"),
     filename: "client.js",

@@ -29,6 +29,7 @@ import express from "express";
 import path from "path";
 import { fileURLToPath } from "url";
 import React from "react";
+import ReactDOM from "react-dom";
 import { renderToString } from "react-dom/server";
 import { createElement } from "react";
 import App from "../src/App.tsx"; // .tsxの拡張子を明示的に指定
