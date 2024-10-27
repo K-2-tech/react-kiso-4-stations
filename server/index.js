@@ -42,21 +42,16 @@ const port = 9000;
 // 静的ファイルの提供
 app.use(express.static(path.join(__dirname, "../dist")));
 
-const REPO_NAME = "react-kiso-4-stations";
-
 // HTMLテンプレート
 const template = `
 <!DOCTYPE html>
 <html>
   <head>
     <title>React SSR</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <base href="/${REPO_NAME}/">
   </head>
   <body>
     <div id="root">%%CONTENT%%</div>
-    <script src="client.js" defer></script>
+    <script src="/client.js"></script>
   </body>
 </html>
 `;

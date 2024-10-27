@@ -49,7 +49,6 @@ export default {
 };
 */
 // webpack.config.mjs
-// webpack.config.mjs
 import path from "path";
 import { fileURLToPath } from "url";
 import nodeExternals from "webpack-node-externals";
@@ -57,18 +56,77 @@ import nodeExternals from "webpack-node-externals";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// リポジトリ名を指定
-const REPO_NAME = "react-kiso-4-stations";
+// サーバーサイド用の設定
+const serverConfig = {
+  target: "node",
+  mode: "production",
+  entry: "./server/index.js",
+  output: {
+    path: path.resolve(__dirname, "dist"),
+    filename: "server.mjs",
+    chunkFormat: "module",
+    clean: true,
+  },
+  experiments: {
+    outputModule: true,
+  },
+  externalsPresets: { node: true },
+  externals: [
+    nodeExternals({
+      importType: "module",
+    }),
+  ],
+  module: {
+    rules: [
+      {
+        test: /\.(js|jsx|ts|tsx)$/,
+        exclude: /node_modules/,
+        use: {
+          loader: "babel-loader",
+          options: {
+            presets: [
+              [
+                "@babel/preset-env",
+                {
+                  targets: {
+                    node: "current",
+                  },
+                  modules: false,
+                },
+              ],
+              "@babel/preset-react",
+              "@babel/preset-typescript",
+            ],
+          },
+        },
+      },
+      {
+        test: /\.css$/,
+        use: ["css-loader"],
+      },
+    ],
+  },
+  resolve: {
+    extensions: [".js", ".jsx", ".ts", ".tsx"],
+    alias: {
+      react: path.resolve(__dirname, "node_modules/react"),
+      "react-dom": path.resolve(__dirname, "node_modules/react-dom"),
+      "react-dom/server": path.resolve(
+        __dirname,
+        "node_modules/react-dom/server"
+      ),
+    },
+  },
+};
 
 // クライアントサイド用の設定
 const clientConfig = {
   target: "web",
   mode: "production",
-  entry: "./client/index.js",
+  entry: "./client/index.js", // client/index.jsを使用するように修正
   output: {
     path: path.resolve(__dirname, "dist"),
     filename: "client.js",
-    publicPath: `/${REPO_NAME}/`, // GitHub Pages用のパスを設定
   },
   module: {
     rules: [
@@ -97,51 +155,4 @@ const clientConfig = {
   },
 };
 
-// サーバーサイド用の設定
-const serverConfig = {
-  target: "node",
-  mode: "production",
-  entry: "./server/index.js",
-  output: {
-    path: path.resolve(__dirname, "dist"),
-    filename: "server.js",
-    chunkFormat: "commonjs",
-    clean: true,
-  },
-  externalsPresets: { node: true },
-  externals: [nodeExternals()],
-  module: {
-    rules: [
-      {
-        test: /\.(js|jsx|ts|tsx)$/,
-        exclude: /node_modules/,
-        use: {
-          loader: "babel-loader",
-          options: {
-            presets: [
-              [
-                "@babel/preset-env",
-                {
-                  targets: {
-                    node: "current",
-                  },
-                },
-              ],
-              "@babel/preset-react",
-              "@babel/preset-typescript",
-            ],
-          },
-        },
-      },
-      {
-        test: /\.css$/,
-        use: ["css-loader"],
-      },
-    ],
-  },
-  resolve: {
-    extensions: [".js", ".jsx", ".ts", ".tsx"],
-  },
-};
-
-export default [clientConfig, serverConfig];
+export default [serverConfig, clientConfig];
